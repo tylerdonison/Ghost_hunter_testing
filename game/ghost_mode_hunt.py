@@ -64,25 +64,19 @@ class Hunt_Mode:
             sanity (int): The ammount of sanity that the player has.
 
         """
-        #This ensures that the chance of being hunted will never be greater than a 1 in 1 chance (prevent bugs)
-        if sanity < 25:
-            sanity = 25 #Remember that this won't change sanity globally. Just don't pass in sanity as a number instead of accessing it through an object
+        if sanity > 60:
+            sanity_chance = 0
+        else:
+            sanity_chance = 100 - sanity #ie if sanity is 30, there is a 70% chance of being hunted.
+                       
+        hunt_check = random.randint(0,99)
 
-        chance_of_being_hunted_inverse = int(sanity / 25)
-        round(chance_of_being_hunted_inverse) #ensures that the chance of being hunted will be an int
-
-        #creates a list from 1 to the inverse of the chance of being hunted. (A greater number is better for the player). Then randomly chooses a number
-        #from the list. If it is a one, they will be hunted. Chances of having a 1 increase with a smaller list.
-        chance_list = []
-        for i in range(chance_of_being_hunted_inverse):
-            chance_list.append(i + 1)
-        random_number_in_chance_list = random.choice(chance_list)
-        if random_number_in_chance_list == 1:
+        if hunt_check < sanity_chance:
             ghost_hunt_mode = True
             self.heart_beat = self._sound_loader.play_heart_beat()
         else:
             ghost_hunt_mode = False
-        return ghost_hunt_mode #This will probably need to be changed to an object that is passed in
+        return ghost_hunt_mode
 
     def follow_sprite(self, player_sprite, ghost):
         """
