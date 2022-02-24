@@ -56,8 +56,10 @@ class Hunt_Mode:
 
         
     def hunt_check(self, sanity):
-        """Checks to see if the ghost will hunt the player. There is a 1 in 20 chance of being hunted if they have 100 sanity
-        and a 1 in 1 chance if their sanity gets to 5
+        """Checks to see if the ghost will hunt the player. 
+        There is a 0% chance of being hunted if they have 60 or more sanity.
+        There is a (100-sanity)% chance of being hunted when sanity is between 60 and 9.
+        There is a 100% chance being hunted when sanity is below 10.
 
         Args:
             self (Hunt_Mode): an instance of Hunt_Mode
@@ -66,14 +68,18 @@ class Hunt_Mode:
         """
         if sanity > 60:
             sanity_chance = 0
-        else:
+            #This effectively give the player a grace period until the Ghost will begin passing hunt checks under 60% sanity
+        elif sanity > 9:
             sanity_chance = 100 - sanity #ie if sanity is 30, there is a 70% chance of being hunted.
+        else: #if sanity is below 10.
+            sanity_chance = 100
                        
         hunt_check = random.randint(0,99)
 
         if hunt_check < sanity_chance:
             ghost_hunt_mode = True
             self.heart_beat = self._sound_loader.play_heart_beat()
+            print(f"The hunt began at {sanity}% sanity")
         else:
             ghost_hunt_mode = False
         return ghost_hunt_mode
